@@ -5,7 +5,7 @@ DOWNLOAD="https://github.com/LiuLang/bcloud/archive/v3.8.2.tar.gz"
 MD5SUM="da01673e455f8bdc5326b60f4abc6e37"
 DOWNLOAD_x86_64=""
 MD5SUM_x86_64=""
-REQUIRES="cssselect git lxml python3-pycrypto python-keyring pygobject3-python3 pyinotify gtk+3"
+REQUIRES="cssselect-python3 dbus-python3 git gtk+3 lxml py3cairo pygobject3-python3 pyinotify-python3 python3 python3-pycrypto python-keyring"
 MAINTAINER="Arondight"
 EMAIL="shell_way@foxmail.com"
 
