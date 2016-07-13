@@ -1,0 +1,52 @@
+From 1017728c90a459f853d9b4c29d3c3563a5512b06 Mon Sep 17 00:00:00 2001
+From: LiuLang <gsushzhsosgsu@gmail.com>
+Date: Sat, 2 Jan 2016 10:54:00 +0800
+Subject: [PATCH 02/10] Call gi.require_version()
+
+---
+ bcloud/App.py   | 4 ++++
+ bcloud/gutil.py | 8 ++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/bcloud/App.py b/bcloud/App.py
+index 64637fe..e4d4d01 100644
+--- a/bcloud/App.py
++++ b/bcloud/App.py
+@@ -8,11 +8,15 @@ import random
+ import time
+ import traceback
+ 
++import gi
++gi.require_version('Gdk', '3.0')
+ from gi.repository import Gdk
+ from gi.repository import Gio
+ from gi.repository import GLib
+ from gi.repository import GObject
++gi.require_version('Gtk', '3.0')
+ from gi.repository import Gtk
++gi.require_version('Notify', '0.7')
+ from gi.repository import Notify
+ 
+ from bcloud import Config
+diff --git a/bcloud/gutil.py b/bcloud/gutil.py
+index ade1a1a..5aa370e 100644
+--- a/bcloud/gutil.py
++++ b/bcloud/gutil.py
+@@ -35,6 +35,14 @@ except (ImportError, ValueError):
+ 
+ DEFAULT_PROFILE = {
+     'window-size': (960, 680),
++    'use-status-icon': True,
++    # 启动时自动最小化
++    'startup-minimized': False,
++    # 默认禁用深色主题
++    'use-dark-theme': False,
++    # 是否显示用户头像
++    'display-avatar': True,
++    'use-notify': True,
+     'first-run': True,
+     'username': '',
+     'password': '',
+-- 
+2.9.0
+

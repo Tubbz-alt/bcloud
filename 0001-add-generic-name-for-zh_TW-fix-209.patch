@@ -1,0 +1,24 @@
+From 87b440e87955f0be018075fbd600095a7e1de036 Mon Sep 17 00:00:00 2001
+From: CzBiX <CzBiX@users.noreply.github.com>
+Date: Mon, 14 Dec 2015 12:24:21 +0800
+Subject: [PATCH 01/10] add generic name for zh_TW, fix #209
+
+---
+ share/applications/bcloud.desktop | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/share/applications/bcloud.desktop b/share/applications/bcloud.desktop
+index 7b112bb..aebfafe 100644
+--- a/share/applications/bcloud.desktop
++++ b/share/applications/bcloud.desktop
+@@ -3,6 +3,7 @@ Name=BCloud
+ Name[zh_CN]=BCloud
+ GenericName=Baidu Pan Client for Linux
+ GenericName[zh_CN]=百度网盘客户端
++GenericName[zh_TW]=百度網盤客戶端
+ Exec=bcloud-gui
+ Icon=bcloud
+ Terminal=false
+-- 
+2.9.0
+

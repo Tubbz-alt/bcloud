@@ -1,0 +1,26 @@
+From 4b54e0fdccf2b3013285fef05c97354cfa31697b Mon Sep 17 00:00:00 2001
+From: LiuLang <gsushzhsosgsu@gmail.com>
+Date: Sat, 2 Jan 2016 15:47:21 +0800
+Subject: [PATCH 05/10] Fixed: KeyError "uploading-hidden-files"
+
+https://github.com/LiuLang/bcloud/issues/205
+---
+ bcloud/UploadPage.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bcloud/UploadPage.py b/bcloud/UploadPage.py
+index 8ea3008..4171d8e 100644
+--- a/bcloud/UploadPage.py
++++ b/bcloud/UploadPage.py
+@@ -441,7 +441,7 @@ class UploadPage(Gtk.Box):
+                 invalid_paths.append(source_path)
+                 continue
+             if (os.path.split(source_path)[1].startswith('.') and
+-                    not self.app.profile['uploading-hidden-files']):
++                    not self.app.profile['upload-hidden-files']):
+                 continue
+             if os.path.isfile(source_path):
+                 self.upload_file(source_path, dir_name)
+-- 
+2.9.0
+

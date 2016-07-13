@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+# Slackware build script for extra-cmake-modules
+
+# Copyright (c) 2016 Arondight, The Slackware Linux CN Community
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+set -e
+
+PREBUILD=${PREBUILD:-no}
+PKGTYPE=${PKGTYPE:-txz}
+PRGNAM='bcloud'
+VERSION=${VERSION:-3.8.2}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_SBo}
+CWD=$(dirname $(readlink -f $0))
+TMP=${TMP:-/tmp/SBo}
+PKG="${TMP}/package-${PRGNAM}"
+OUTPUT=${OUTPUT:-/tmp}
+SLACKVER_FILE='/etc/slackware-version'
+SLACKVER=$(sed -n 's/slackware \([0-9]\+\.[0-9]\+\)$/\1/ip' $SLACKVER_FILE)
+DOWNLOADS=(
+  "https://github.com/LiuLang/bcloud/archive/v${VERSION}.tar.gz"
+)
+SOURCES=(
+  $(basename ${DOWNLOADS[0]})
+  './0001-add-generic-name-for-zh_TW-fix-209.patch'
+  './0002-Call-gi.require_version.patch'
+  './0003-Support-startup-minimized.patch'
+  './0004-Support-download-to.patch'
+  './0005-Fixed-KeyError-uploading-hidden-files.patch'
+  './0006-Fix-Network-error-after-login.patch'
+  './0007-Shared-link-with-pickup-password-need-cookie-now.patch'
+  './0008-Set-timeout-to-http.client.HTTPConnection.patch'
+  './0009-Fix-bad-escape-in-JSON-return-for-list-share.patch'
+  './0010-Download-should-be-killable-by-KeyboardInterrupt.patch'
+)
+MD5SUMS=(
+  'da01673e455f8bdc5326b60f4abc6e37'  # v3.8.2.tar.gz
+  '9a9e12e4a0ecef712a0d2ecb8345e0f6'  # 0001-add-generic-name-for-zh_TW-fix-209.patch
+  'a12e211049a05c0e7136274b3d62ae3f'  # 0002-Call-gi.require_version.patch
+  '8132e4b060be6ae1574c05467a6c1ff6'  # 0003-Support-startup-minimized.patch
+  'c4dd6ed46098b4d22cee4801b87e334e'  # 0004-Support-download-to.patch
+  'fd266268c5de14ccf9694a140b363030'  # 0005-Fixed-KeyError-uploading-hidden-files.patch
+  'bcdd68c20f181f64c8f8bbb4ea15be97'  # 0006-Fix-Network-error-after-login.patch
+  'ce1d15a00200cdb57608c96a582cdc0f'  # 0007-Shared-link-with-pickup-password-need-cookie-now.patch
+  '918520d108be90e80e7aa3f7083b89da'  # 0008-Set-timeout-to-http.client.HTTPConnection.patch
+  'a995e7f6ee58b85af6ba2b1b51e6e482'  # 0009-Fix-bad-escape-in-JSON-return-for-list-share.patch
+  '6b90c890f0dffe326e3f21f824baf52f'  # 0010-Download-should-be-killable-by-KeyboardInterrupt.patch
+)
+
+if [[ -z "$ARCH" ]]
+then
+  case "$(uname -m)" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+    *)    ARCH=$(uname -m) ;;
+  esac
+fi
+
+if [[ 'yes' == $PREBUILD ]]
+then
+  test -n ${DOWNLOADS[0]}
+  wget -N ${DOWNLOADS[0]}
+fi
+
+for index in {0..10}
+do
+  test -r ${SOURCES[$index]}
+  test ${MD5SUMS[$index]} == $(md5sum ${SOURCES[$index]} | awk '{print $1}')
+done
+
+test -d $PKG && rm -rvf $PKG || :
+mkdir -pv $TMP $PKG $OUTPUT
+
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+test -d "${PRGNAM}-${VERSION}" && rm -rvf "${PRGNAM}-${VERSION}" || :
+tar -zxvf "${CWD}/${SOURCES[0]}"
+
+cd "${PRGNAM}-${VERSION}"
+git init
+git add .
+git commit -m 'Init'
+for index in {1..10}
+do
+  git am "${CWD}/${SOURCES[$index]}"
+done
+python3 setup.py build
+python3 setup.py install -O1 --skip-build --root="${PKG}"
+
+mkdir -pv "${PKG}/install"
+install -Dv -m 0644 "${CWD}/${PRGNAM}.SlackBuild" "${PKG}/usr/doc/${PRGNAM}-${VERSION}/${PRGNAM}.SlackBuild"
+install -Dv -m 0644 "${CWD}/slack-desc" "${PKG}/install/slack-desc"
+install -Dv -m 0755 "${CWD}/doinst.sh" "${PKG}/install/doinst.sh"
+
+cd $PKG
+/sbin/makepkg -l y -c n "${OUTPUT}/${PRGNAM}-${VERSION}-${ARCH}-${BUILD}${TAG}.${PKGTYPE:-tgz}"
+
