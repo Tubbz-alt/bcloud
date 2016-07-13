@@ -96,6 +96,8 @@ tar -zxvf "${CWD}/${SOURCES[0]}"
 
 cd "${PRGNAM}-${VERSION}"
 git init
+git config --global user.email "${USER}@localhost"
+git config --global user.name "${USER}"
 git add .
 git commit -m 'Init'
 for index in {1..10}
