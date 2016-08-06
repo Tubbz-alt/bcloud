@@ -25,6 +25,8 @@ See [bcloud.info](bcloud.info) and [slack-desc](slack-desc) for more info.
 ```
 git clone https://github.com/slackwarecn/bcloud.git
 cd bcloud
-PREBUILD=yes ./bcloud.SlackBuild
+source bcloud.info
+wget $DOWNLOAD
+./bcloud.SlackBuild
 ```
 
